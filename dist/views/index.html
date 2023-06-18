@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+		<title>File Directory Web</title>
+		<script src="/__static__/jquery.js?r=<%= Math.random() %>"></script>
+    <script src="/__static__/md5.min.js?r=<%= Math.random() %>"></script>
+    <script src="/__static__/crypto-js.js?r=<%= Math.random() %>"></script>
+    <script src="/__static__/file-hash.js?r=<%= Math.random() %>"></script>
+		<style>
+      body{
+        font-size: 14px;
+        padding: 16px;
+      }
+			table {
+				border-collapse: collapse;
+				border: 1px solid #DDDDDD;
+			}
+			td,
+			th {
+        font-size: 12px;
+				text-align: left;
+				padding: 8px;
+				border: 1px solid #DDDDDD;
+			}
+      th {
+        cursor: pointer;
+      }
+      a:link {color:#409EFF;}
+      a:hover {color:#0000EE;}
+      a:active {color: red;}
+      
+      .navigation a {
+        text-decoration: none;
+        margin: 0 1px;
+        padding: 0 2px;
+      }
+      .navigation a:hover {
+        border: 1px dotted #ddd;
+      }
+      .navigation a:active {
+        border: 1px dotted #ddd;
+      }
+      .toolbar {
+        margin: 8px 0;
+        white-space: nowrap;
+      }
+      .toolbar-left,.toolbar-right {
+        display: inline-block;
+        margin-right: 16px;
+        vertical-align: top;
+      }
+      .sort {
+        display: block;
+        float: right;
+      }
+      
+      .desc {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        border-style: solid;
+        border-width: 0 4px 4px;
+        border-color: transparent transparent #a9a9a9;
+        transform: rotate(180deg);
+        margin-top: 2px;
+      }
+
+      .asc {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        border-style: solid;
+        border-width: 0 4px 4px;
+        border-color: transparent transparent #a9a9a9;
+      }
+
+      .sorting {
+        border-color: transparent transparent #409eff;
+      }
+		</style>
+	</head>
+	<body>
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="navigation"></div>
+      </div>
+      <% if(writable) { %>
+        <div class="toolbar-right">
+          <img width="30" src="/__static__/add-directory.svg" style="cursor: pointer;margin-right: 16px;" onclick="createDirectory()"></img>
+          <img width="30" src="/__static__/add-file.svg" style="cursor: pointer;" onclick="addFile()"></img>
+          <input
+            type="file"
+            name="file"
+            id="file"
+            placeholder="Upload files"
+            multiple="multiple"
+            style="display:none;"
+          />           
+          <span id="upload-progress" style="display: none;margin-left: 16px;">
+            <img src="/__static__/loading.gif">&nbsp;&nbsp;Uploading... &nbsp; <span id="upload-progress-percent">0</span>%
+          </span>
+        </div>
+      <% } %> 
+    </div>
+    <table>
+      <tr>
+        <th class="fileName" onclick="sort('fileName')">File Name&nbsp;<span class="sort"><span class="asc"></span><span class="desc"></span></span></th>
+        <th class="fileSize" onclick="sort('fileSize')">File Size&nbsp;<span class="sort"><span class="asc"></span><span class="desc"></span></span></th>
+        <th class="fileCreateTime" onclick="sort('fileCreateTime')">Create Time&nbsp;<span class="sort"><span class="asc"></span><span class="desc"></span></span></th>
+        <th class="fileUpdateTime" onclick="sort('fileUpdateTime')">Update Time&nbsp;<span class="sort"><span class="asc"></span><span class="desc"></span></span></th>
+        <th>Operate</th>
+      </tr>
+      <% dataList.forEach((data, index )=> { 
+        var number2 = function(num) {
+          return Number(num) < 10 ? ('0'+num) : num
+        }
+  
+        var dateFormat = function(date) {
+          return number2(date.getDate()) + '/' + 
+            number2((date.getMonth() + 1)) + '/' + 
+            date.getFullYear() + ' ' +
+            number2(date.getHours()) + ':' + 
+            number2(date.getMinutes()) + ':' + 
+            number2(date.getSeconds())
+        }
+      %>
+      <tr>
+        <td><img src="/__static__/<%= data.fileType %>.png" width="15" height="15"></img>&nbsp;<a
+          href="javascript:void(0)"
+          onclick="operate('<%= data.fileType %>', '<%= data.fileName %>')"
+          ><%= data.fileName %></a></td>
+        <td style="text-align: right;"><%= Math.ceil(data.fileSize / 1024) + ' '%>KB</td>
+        <td><%= dateFormat(new Date(data.fileCreateTime)) %></td>
+        <td><%= dateFormat(new Date(data.fileUpdateTime)) %></td>
+        <td>
+          <a
+            href="javascript:void(0)"
+            onclick="operate('<%= data.fileType %>', '<%= data.fileName %>')"
+            ><%= data.fileType === 'file' ? 'Download' :
+            ((data.fileType === 'directory') ? 'Enter' : '')
+            %></a>
+          <% if(writable) {%>
+            &nbsp;|&nbsp;
+            <a href="javascript:void(0)" onclick="editFile('<%= data.fileName %>')">Edit</a>&nbsp;|&nbsp;
+            <a href="javascript:void(0)" onclick="deleteFile('<%= data.fileName %>')">Delete</a>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </table>
+	</body>
+  <% if(writable) { %>
+    <script src="/__static__/writable.js"></script>
+  <% } %>
+	<script>
+		function operate(fileType, fileName) {
+			var filePath = location.pathname.endsWith('/')
+				? location.pathname + fileName
+				: location.pathname + '/' + fileName
+			if (fileType === 'file') {
+				var a = document.createElement('a')
+				document.body.appendChild(a)
+				a.setAttribute('type', 'hidden')
+				a.download = fileName
+				a.href = filePath
+				a.click()
+			} else {
+				location.pathname = filePath
+			}
+		}
+
+    function addFile() {
+      $('#file').click()
+    }
+
+    function getCurrSort() {
+      try{
+        let searchMatch = location.search.match(/sort_field=((fileName|fileCreateTime|fileSize|fileUpdateTime))&sort_order=((asc|desc|normal))/)
+        if(!searchMatch || !Array.isArray(searchMatch)) return 
+        return searchMatch[0].split('&').reduce(function(rs, item){
+          let split = item.split('=')
+          rs[split[0]] = split[1]
+          return rs
+        }, {})
+      }catch(err) {
+        console.error(err)
+        return 
+      }
+    }
+
+    function sort(name) {
+      const currSort = getCurrSort()
+      let sortParams = ''
+      if(currSort) {
+        if(currSort.sort_field === name) {
+          sortParams = `?sort_field=${name}&sort_order=${({'asc':'desc', 'desc':'normal', 'normal': 'asc'})[currSort.sort_order]}`
+        }else{
+          sortParams = `?sort_field=${name}&sort_order=asc`
+        }
+      }else {
+        sortParams = `?sort_field=${name}&sort_order=asc`
+      }
+      location.search = sortParams
+    }
+
+    function initSort() {
+      const currSort = getCurrSort()
+      if(currSort) {
+        let sort_field = currSort.sort_field
+        let sort_order = currSort.sort_order
+        if(sort_order !== 'normal') {
+          $(`.${sort_field} .${sort_order}`).addClass('sorting')
+        }
+      }
+    }
+
+    function initNav() {
+      let pathname = decodeURIComponent(location.pathname)
+      let $p = []
+      let $pathname = pathname
+      let genNavDom = pathname.replace(/(([^\/]+)|(\/))/g, function(pn, p1, p2, p3, index){
+        return `<a href="${$pathname.substring(0, index + pn.length)}" style="font-size: ${pn === '/' ? '18px' : '14px'};">${pn}</a>`
+      })
+      $('.navigation').html(genNavDom)
+    }
+
+    function initToolbarWidth() {
+      let tableWidth = $('table').width()
+      $('.toolbar-left').css('min-width', `${tableWidth - 98}px`)
+    }
+
+    initNav()
+    initSort()
+    initToolbarWidth()
+    $(window).resize(initToolbarWidth)
+	</script>
+
+</html>

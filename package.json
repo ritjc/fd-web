@@ -1,0 +1,66 @@
+{
+	"name": "fdw",
+	"version": "1.0.1",
+	"description": "Simple file directory web service",
+	"main": "./dist/main.js",
+	"bin": {
+		"fdw": "./bin/fdw"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"prebuild": "rimraf ./dist",
+		"build": "set NODE_ENV=production && rollup -c",
+		"watch": "set NODE_ENV=development && rollup -c -w",
+		"restart": "node index.js",
+		"start": "npm run build && npm run restart",
+		"publish-patch": "npm version patch && git push && git push --tags && npm publish"
+	},
+	"author": "ritjc",
+	"keywords": [
+		"cli",
+		"file",
+		"directory",
+		"folder",
+		"serice",
+		"server",
+		"fdw",
+		"static",
+		"simple"
+	],
+	"license": "MIT",
+	"devDependencies": {
+		"@babel/core": "^7.7.2",
+		"@babel/plugin-transform-runtime": "^7.5.5",
+		"@babel/preset-env": "^7.21.5",
+		"@rollup/plugin-alias": "^3.0.0",
+		"@rollup/plugin-babel": "^5.2.1",
+		"@rollup/plugin-commonjs": "^16.0.0",
+		"@rollup/plugin-eslint": "^8.0.0",
+		"@rollup/plugin-json": "^4.0.1",
+		"@rollup/plugin-node-resolve": "^7.0.0",
+		"@rollup/plugin-replace": "^2.3.0",
+		"builtin-modules": "^3.1.0",
+		"eslint": "^7.9.0",
+		"rimraf": "^5.0.1",
+		"rollup": "^2.33.3",
+		"rollup-plugin-copy": "^3.4.0",
+		"rollup-plugin-terser": "^5.2.0"
+	},
+	"dependencies": {
+		"address": "^1.2.2",
+		"blueimp-md5": "^2.19.0",
+		"colors": "^1.4.0",
+		"commander": "^6.1.0",
+		"crypto-js": "^4.1.1",
+		"default-gateway": "4.1.2",
+		"fs-extra": "^11.1.1",
+		"koa": "^2.14.2",
+		"koa-body": "^6.0.1",
+		"koa-ejs": "^4.3.0",
+		"koa-router": "7.0.1",
+		"koa-static2": "^0.1.8",
+		"koa2-formidable": "^1.0.3",
+		"lodash": "^4.17.20",
+		"shelljs": "^0.8.4"
+	}
+}

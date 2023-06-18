@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+var path = require('path')
+var commander = require('commander')
+var packageJson = require('../package.json')
+var Service = require('../dist/main.js').Service
+
+var program = new commander.Command()
+
+program.version(packageJson.version).usage('<command> [options] ')
+
+program
+	.option('-p, --port <number>', 'Server port', 8080)
+	.option('-d, --dir <value>', 'The root directory', './')
+	.option('-w, --writable', 'File directory has write permission', false)
+	.action(() => {
+		new Service({
+			port: program.port,
+			dir: path.resolve(process.cwd(), program.dir),
+			writable: program.writable,
+		}).startService()
+	})
+
+program.parse(process.argv)

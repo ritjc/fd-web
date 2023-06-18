@@ -1,0 +1,15 @@
+/node_modules
+*.log
+*.pid
+*.iml
+.idea/**
+.cache-require-paths.json
+package-lock.json
+.DS_Store
+*.swp
+*.swo
+yarn.lock
+*.tar.gz
+/src
+/test
+.vscode/**
