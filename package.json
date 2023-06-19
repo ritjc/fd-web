@@ -22,10 +22,7 @@
 		"directory",
 		"folder",
 		"serice",
-		"server",
-		"fdw",
-		"static",
-		"simple"
+		"static"
 	],
 	"license": "MIT",
 	"devDependencies": {
@@ -48,7 +45,6 @@
 	},
 	"dependencies": {
 		"address": "^1.2.2",
-		"blueimp-md5": "^2.19.0",
 		"colors": "^1.4.0",
 		"commander": "^6.1.0",
 		"crypto-js": "^4.1.1",
@@ -60,7 +56,11 @@
 		"koa-router": "7.0.1",
 		"koa-static2": "^0.1.8",
 		"koa2-formidable": "^1.0.3",
-		"lodash": "^4.17.20",
-		"shelljs": "^0.8.4"
-	}
+		"lodash": "^4.17.20"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:ritjc/fd-web.git"
+	},
+	"bugs": "https://github.com/ritjc/fd-web/issues"
 }
