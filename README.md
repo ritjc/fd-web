@@ -38,7 +38,6 @@
 
   ```
 
-
 # Features
 
 Readable ( default )
@@ -46,8 +45,6 @@ Readable ( default )
 - [x] sort by file attributes
 - [x] download file
 - [x] access subdirectory 
-![](./s1.png)
-
 
 Writable ( --writable )
 - [x] upload multiple files
@@ -55,4 +52,11 @@ Writable ( --writable )
 - [x] modify directory name
 - [x] delete file
 - [x] delete directory
+
+# Show
+## Readable
+![](./s1.png)
+
+## Writable
 ![](./s2.png)
+
