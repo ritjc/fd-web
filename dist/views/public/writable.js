@@ -2,8 +2,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 
-const { promises } = require('fs-extra')
-
 const LARGE_FILE_MIN_SIZE = 100 * 1024 * 1024 // As long as it is equal to or greater than this value, it is a large file
 const FILE_SLICE_SIZE = 100 * 1024 * 1024 // Large file slice size
 const IS_CHECK_HASH = true // Whether to verify the hash value of the uploaded file content
