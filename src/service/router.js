@@ -213,8 +213,8 @@ router.post(
 				tempDest,
 				Number(startIndex)
 			)
-			if (isEndReq && fileHash) {
-				if (fileHash !== getFileHash(tempDest)) {
+			if (isEndReq) {
+				if (fileHash && fileHash !== getFileHash(tempDest)) {
 					throw new Error('File hash value verification failed！')
 				}
 
